@@ -1,8 +1,7 @@
 package main.controllers
 
-import main.service.RoleRepository
-import main.models.resultAccount
 import main.service.FileInfoService
+import main.service.RoleRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -18,7 +17,7 @@ public class AccountController {
     private RoleRepository accountRepository;
     @Autowired
     private FileInfoService fileInfoService
-    private List<resultAccount> resultAccountList;
+   // private List<resultAccount> resultAccountList;
 
     /* @RequestMapping("/get-roles")
 
