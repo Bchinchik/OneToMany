@@ -12,7 +12,7 @@ public interface FileInfoService {
     List<FileInfo> getFileListUser(String path)
 
     //@PostAuthorize("returnObject.fileSize == 32")
-    @PostFilter ('filterObject.filePath.toLowerCase().contains(authentication.name.toString())')
+    //@PostFilter (`filterObject/filePath/toLowerCase()/contains(authentication/name/toString())`)
     List<FileInfo> getFileList(String path)
 
     List<FileInfo> createFile(String path,String textBody)

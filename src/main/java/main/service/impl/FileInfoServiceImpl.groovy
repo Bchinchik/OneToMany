@@ -5,7 +5,10 @@ import main.models.FileInfo
 import main.service.FileInfoService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
+
 /**
  * Created by chinchik_b on 10.11.2016.
  */
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service
 public class FileInfoServiceImpl implements FileInfoService {
 
     public Logger logger = LoggerFactory.getLogger(this.class.getName())
+
     @Override
     List<FileInfo> getFileListAdmin(String path) {
 
@@ -29,41 +33,46 @@ public class FileInfoServiceImpl implements FileInfoService {
     @Override
     List<FileInfo> getFileListUser(String path) {
         List<FileInfo> listFileInfo = []
-       // def list =[]
+        // def list =[]
         def file = new File(path)
         file.eachFile(FileType.FILES) {
             listFileInfo << new FileInfo(filePath: it.absolutePath,
                     fileSize: it.size(), dateModification: new Date(it.lastModified()).format("MM/dd/yyyy HH:mm:ss"), fileText: it.getText())
 
-            listFileInfo = listFileInfo.findAll{it.fileSize>32}
+            listFileInfo = listFileInfo.findAll { it.fileSize > 32 }
         }
         return listFileInfo
     }
 
+
     @Override
     List<FileInfo> getFileList(String path) {
+        //def profile = env.getActiveProfiles()
+
+        final String NULLPARAM = ''
+        final Integer ZERO = 0
         List<FileInfo> listFileInfo = []
-       def file
-
+        def file
+        if (path == NULLPARAM) {
+            path = new File(System.getProperty("user.dir"))
+            logger.warn("Получен Get запрос без параметра, будет использована текущая директория " + path)
+        }
         try {
-             file = new File(path)
-        //    def count = file.listFiles().length.toInteger()
-
-       //          if (count ==0){logger.warn(String.format("Папка %s не содержит файлов",path))}
-        //    else{
-                 file.eachFile(FileType.FILES) {
-                     listFileInfo << new FileInfo(filePath: it.absolutePath,
-                             fileSize: it.size(), dateModification: new Date(it.lastModified()).format("MM/dd/yyyy HH:mm:ss"), fileText: it.getText())
-            //     }
-                     def count = file.listFiles().length.toInteger()
-                     if (count ==0){logger.warn(String.format("Папка %s не содержит файлов",path))}
+            file = new File(path)
+            file.eachFile(FileType.FILES) {
+                listFileInfo << new FileInfo(filePath: it.absolutePath,
+                        fileSize: it.size(), dateModification: new Date(it.lastModified()).format("MM/dd/yyyy HH:mm:ss"), fileText: it.getText().take(20))
             }
-        } catch (FileNotFoundException ex) { logger.error(String.format("При попытке открытия папки %s возникла ошибка, данной папки не существует!!!",path))
+            if (listFileInfo.size() == ZERO) {
+                logger.warn(String.format("Директория '%s' не содержит файлов. Лист пустой.", path))
+            } else {
+                logger.debug(String.format("Список файлов из директории '%s' получен успешно.", path))
+            }
+        } catch (FileNotFoundException ex) {
+            logger.error(String.format("При попытке чтения директории '%s' возникла ошибка, данной директории не существует!!!", path) + ex.toString())
+
         }
 
-        if (listFileInfo.size()== 0 ){
-            logger.warn("Возвращаемый лист пустой!")}
-       else{ logger.debug("лист получен и отдан нормально")}
         return listFileInfo
     }
 
