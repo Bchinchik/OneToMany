@@ -3,6 +3,7 @@ package main.service.impl
 import main.models.Role
 import main.models.User
 import main.service.UserRepository
+import org.slf4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -32,5 +33,6 @@ public class UserDetailsServiceImpl implements UserDetailsService{
         }
 
         return new org.springframework.security.core.userdetails.User(user.getName(), user.getPass(), grantedAuthorities);
+
     }
 }

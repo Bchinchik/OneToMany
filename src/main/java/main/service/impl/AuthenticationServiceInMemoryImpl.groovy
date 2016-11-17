@@ -21,5 +21,6 @@ public class AuthenticationServiceInMemoryImpl implements AuthenticationService 
                 .withUser("admin").password("123").roles("ADMIN")
                 .and()
                 .withUser("user").password("user").roles("USER")
+
     }
 }

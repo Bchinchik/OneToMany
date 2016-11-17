@@ -38,6 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     //@Autowired
     public void methodCall() {
         authenticationService.setAuthenticationMethod()
+
                 /*.inMemoryAuthentication()
                 .withUser("admin").password("admin").roles("ADMIN")
                 .and()

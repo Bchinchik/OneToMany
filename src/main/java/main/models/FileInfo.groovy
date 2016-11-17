@@ -14,5 +14,35 @@ class FileInfo {
     String dateModification
     String fileText
 
+    String getFilePath() {
+        return filePath
+    }
 
+    void setFilePath(String filePath) {
+        this.filePath = filePath
+    }
+
+    Long getFileSize() {
+        return fileSize
+    }
+
+    void setFileSize(Long fileSize) {
+        this.fileSize = fileSize
+    }
+
+    String getDateModification() {
+        return dateModification
+    }
+
+    void setDateModification(String dateModification) {
+        this.dateModification = dateModification
+    }
+
+    String getFileText() {
+        return fileText
+    }
+
+    void setFileText(String fileText) {
+        this.fileText = fileText
+    }
 }

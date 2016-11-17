@@ -19,5 +19,6 @@ public class AuthenticationServiceDataBaseImpl implements AuthenticationService{
     @Autowired
     public void setAuthenticationMethod(AuthenticationManagerBuilder auth) {
         auth.userDetailsService(userDetailsService)
+
     }
 }

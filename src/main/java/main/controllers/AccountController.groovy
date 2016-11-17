@@ -1,5 +1,6 @@
 package main.controllers
 
+import groovy.util.logging.Slf4j
 import main.service.FileInfoService
 import main.service.RoleRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,32 +12,28 @@ import org.springframework.ui.ModelMap
 import org.springframework.web.bind.annotation.*
 
 @Controller
-
+@Slf4j
 public class AccountController {
     @Autowired
-    private RoleRepository accountRepository;
+    private RoleRepository accountRepository
+
     @Autowired
     private FileInfoService fileInfoService
-   // private List<resultAccount> resultAccountList;
 
-    /* @RequestMapping("/get-roles")
-
-     public List<Role> getAccounts() {
-         List<Role> list = (List<Role>) accountRepository.findAll();
-         return list;
-     }*/
 
     @RequestMapping(value = "/dir", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAnyRole('ADMIN','USER')")
-//, produces = MediaType.APPLICATION_XML_VALUE)
+
     public String dirFileList(@RequestParam(value = "path") String path,
                               @ModelAttribute("model") ModelMap model,
                               @AuthenticationPrincipal User principal) {//, HttpServletRequest request) {
-        //def temp = PreAuthorize.f
 
-//def temp = principal.getAuthorities().toString()
+
+
         if (principal.getAuthorities().toString().equals("[ROLE_ADMIN]")) {
             model.addAttribute("fileInfoList", fileInfoService.getFileList(path))
+            //log
+
             //  model.addAttribute("userName",userName)
         } else {
             if (principal.getAuthorities().toString().equals("[ROLE_USER]")) {
@@ -44,17 +41,17 @@ public class AccountController {
                 //  model.addAttribute("userName",userName)
             }
         }
-//        model.addAttribute("fileInfoList", fileInfoService.getFileListAdmin(path))
+
         return "FileInfo"
     }
 
 
     @RequestMapping(value = "/dir", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAnyRole('ADMIN','USER')")
-    //@PermitAll
+
     public String createFile(@RequestParam(value = "path") String path, @RequestBody String textFromRequestBody,
                              @ModelAttribute("model") ModelMap model, @AuthenticationPrincipal User principal) {
-       // path += principal.getUsername().toString()+".txt"
+
         model.addAttribute("fileInfoList", fileInfoService.createFile(path, textFromRequestBody))
         return "FileInfo"
 
