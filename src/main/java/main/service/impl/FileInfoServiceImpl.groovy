@@ -5,10 +5,9 @@ import main.models.FileInfo
 import main.service.FileInfoService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.core.env.Environment
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-
 /**
  * Created by chinchik_b on 10.11.2016.
  */
@@ -44,9 +43,13 @@ public class FileInfoServiceImpl implements FileInfoService {
         return listFileInfo
     }
 
-
+   /* @Autowired
+    public UserDetailsService userDetailsService*/
     @Override
     List<FileInfo> getFileList(String path) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
         //def profile = env.getActiveProfiles()
 
         final String NULLPARAM = ''
@@ -55,7 +58,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         def file
         if (path == NULLPARAM) {
             path = new File(System.getProperty("user.dir"))
-            logger.warn("Получен Get запрос без параметра, будет использована текущая директория " + path)
+            logger.warn("Получен запрос без параметра, будет использована текущая директория: '${path}' ")
         }
         try {
             file = new File(path)
@@ -64,13 +67,14 @@ public class FileInfoServiceImpl implements FileInfoService {
                         fileSize: it.size(), dateModification: new Date(it.lastModified()).format("MM/dd/yyyy HH:mm:ss"), fileText: it.getText().take(20))
             }
             if (listFileInfo.size() == ZERO) {
-                logger.warn(String.format("Директория '%s' не содержит файлов. Лист пустой.", path))
+                logger.warn("Директория '${path}' не содержит файлов. Лист пустой.")
             } else {
-                logger.debug(String.format("Список файлов из директории '%s' получен успешно.", path))
+                logger.debug("Запрос от пользователя: [ ${name} ]. Список файлов из директории '${path}' получен успешно. Колличество найденых файлов в папке: ${listFileInfo}")
             }
         } catch (FileNotFoundException ex) {
-            logger.error(String.format("При попытке чтения директории '%s' возникла ошибка, данной директории не существует!!!", path) + ex.toString())
 
+            logger.error("При попытке чтения директории '${path}' возникла ошибка, данной директории не существует!!!", ex)
+          // throw new FileNotFoundException("not found")
         }
 
         return listFileInfo
